@@ -1,0 +1,30 @@
+# NOTE: update this with your service name
+service: sls-chrome-dom
+
+# Use the serverless-webpack plugin to transpile ES6
+plugins:
+  - serverless-plugin-chrome
+  - serverless-webpack
+
+# Enable auto-packing of external modules
+custom:
+  webpackIncludeModules: true
+  chrome:
+    flags:
+      - --window-size=1280x1696
+      - --hide-scrollbars
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: dev
+  region: us-west-2
+  timeout: 30
+
+functions:
+  hello:
+    handler: handlers/dom.default
+    events:
+      - http:
+          path: dom
+          method: get
