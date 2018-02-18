@@ -29,12 +29,12 @@ export default async function loadDOM (url, userAgent) {
     const {pathname} = parseUrl.parse(request.url);
 
     if (pathname.match(/\.(css|png|jpg|jpeg|gif|webp|svg|woff|woff2|ttf|otf)$/)) {
-        blocked = true;
+      blocked = true;
     }
 
     Network.continueInterceptedRequest({
-        interceptionId,
-        errorReason: blocked ? 'Aborted' : undefined
+      interceptionId,
+      errorReason: blocked ? 'Aborted' : undefined
     });
   });
 
