@@ -2,7 +2,7 @@ import Cdp from 'chrome-remote-interface'
 import sleep from '../utils/sleep'
 import parseUrl from 'url'
 
-export default async function loadDOM (url, userAgent, proxy, mobile = false) {
+export default async function loadDOM (url, userAgent) {
   const LOAD_TIMEOUT = process.env.PAGE_LOAD_TIMEOUT || 1000 * 60
 
   let result
