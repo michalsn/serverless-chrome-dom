@@ -62,9 +62,7 @@ export default async function loadDOM (url, userAgent) {
     });
     const html = dom.result.value;
 
-    result = JSON.stringify({
-      data: html,
-    })
+    result = html
   } catch (error) {
     console.error(error)
   }

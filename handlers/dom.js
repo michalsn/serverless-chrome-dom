@@ -16,6 +16,9 @@ export default async function handler (event, context, callback) {
 
   return callback(null, {
     statusCode: 200,
+    headers: {
+      'Content-Type': 'text/html',
+    },
     body: data,
   })
 }
