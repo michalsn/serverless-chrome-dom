@@ -28,3 +28,10 @@ functions:
       - http:
           path: dom
           method: get
+
+  version:
+    handler: src/handlers/version.default
+    events:
+      - http:
+          path: version
+          method: get
