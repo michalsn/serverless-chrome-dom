@@ -52,9 +52,11 @@ export default async function loadDOM (url, userAgent) {
 
     await Network.setRequestInterception({patterns: [{ urlPattern: '*' }]});
 
-    await Page.navigate({ url })
+    const response = await Page.navigate({ url })
     await Page.loadEventFired()
     await loading()
+
+    //console.log(response)
 
     // get generated dom
     const dom = await Runtime.evaluate({
@@ -62,7 +64,10 @@ export default async function loadDOM (url, userAgent) {
     });
     const html = dom.result.value;
 
-    result = html
+    result = {
+      data: html,
+    }
+    
   } catch (error) {
     console.error(error)
   }

@@ -22,8 +22,8 @@ provider:
   timeout: 30
 
 functions:
-  hello:
-    handler: handlers/dom.default
+  dom:
+    handler: src/handlers/dom.default
     events:
       - http:
           path: dom
