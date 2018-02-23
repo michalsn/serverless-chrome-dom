@@ -19,11 +19,10 @@ export default async function handler (event, context, callback) {
     contentType = 'text/html'
   }
 
-  const url = request.url || ''
-  const userAgent = request.userAgent || 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36'
+  request.userAgent = request.userAgent || 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36'
 
   try {
-    responseBody = await dom(url, userAgent)
+    responseBody = await dom(request)
 
     if (contentType == 'application/json') {
       responseBody = JSON.stringify(responseBody)
