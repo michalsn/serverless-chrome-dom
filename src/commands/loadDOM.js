@@ -39,6 +39,12 @@ export default async function loadDOM (request) {
   // set request interception url pattern
   await Network.setRequestInterception({ patterns: [{urlPattern: '*'}] });
 
+  // speed up page load by blocking unnecessary domains
+  Network.setBlockedURLs({ urls: [
+    '*www.facebook.com*','*facebook.net*','*.fbcdn.net*','*www.google-analytics.com*','*www.googletagmanager.com*','*api.mixpanel.com*',
+    '*doubleclick.net*','*ads.yahoo.com*', '*adroll.com*','*adf.ly*',
+    '*fonts.googleapis.com*','*use.typekit.net*'
+  ]})
 
   // catch request
   Network.requestIntercepted(({interceptionId, request, resourceType, authChallenge}) => {
