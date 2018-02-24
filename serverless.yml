@@ -13,6 +13,8 @@ custom:
     flags:
       - --window-size=1280x1696
       - --hide-scrollbars
+    functions:
+      - version
 
 provider:
   name: aws

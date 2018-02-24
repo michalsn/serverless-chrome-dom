@@ -1,9 +1,18 @@
+import launchChrome from '@serverless-chrome/lambda'
 import Cdp from 'chrome-remote-interface'
 import sleep from '../utils/sleep'
 
 export default async function loadDOM (request) {
   const LOAD_TIMEOUT = process.env.PAGE_LOAD_TIMEOUT || 1000 * 60
 
+  const loading = async (startTime = Date.now()) => {
+    if (!loaded && Date.now() - startTime < LOAD_TIMEOUT) {
+      await sleep(100)
+      await loading(startTime)
+    }
+  }
+
+  // result
   let json = {}
   let loaded = false
 
@@ -16,18 +25,25 @@ export default async function loadDOM (request) {
   const logBlocked = request.logBlocked || '0'
   let blockedContentLog = []
 
+  // chrome flags
+  let chromeFlags = []
+
+  // set proxy if available
+  if (request.proxy) {
+    chromeFlags.push('--proxy-server='+request.proxy)
+  }
+
+   // proxy credentials
   let proxyCredentials;
 
   if (request.proxyUsername && request.proxyPassword) {
     proxyCredentials = { response: 'ProvideCredentials', username: request.proxyUsername, password: request.proxyPassword }
   }
 
-  const loading = async (startTime = Date.now()) => {
-    if (!loaded && Date.now() - startTime < LOAD_TIMEOUT) {
-      await sleep(100)
-      await loading(startTime)
-    }
-  }
+  // run chrome with custom flags
+  const chromeInstance = await launchChrome({
+    flags: chromeFlags
+  })
 
   // open tab
   const [tab] = await Cdp.List()
@@ -58,7 +74,7 @@ export default async function loadDOM (request) {
       case 'Stylesheet':
       case 'Image':
       case 'Media':
-      case "Font": {
+      case 'Font': {
         blockedRequest = true;
         if (logBlocked == '1') {
           blockedContentLog.push(request.url)
@@ -77,8 +93,8 @@ export default async function loadDOM (request) {
       interceptionId,
       errorReason: blockedRequest ? 'Aborted' : undefined,
       authChallengeResponse: proxyAuth && proxyCredentials ? proxyCredentials : undefined,
-    });
-  });
+    })
+  })
 
   /*Network.responseReceived((params) => {
     const {status, url} = params.response;
@@ -90,10 +106,9 @@ export default async function loadDOM (request) {
     if (params.type === 'Document') {
       // set main frame id
       if (pageFrameId === undefined) {
-        pageFrameId = params.frameId;
+        pageFrameId = params.frameId
       }
     }
-      
   })
 
   // log some info about status code and url
@@ -108,6 +123,7 @@ export default async function loadDOM (request) {
     }
   });
 
+  // page loaded
   Page.loadEventFired(() => {
     loaded = true
   })
@@ -159,6 +175,11 @@ export default async function loadDOM (request) {
   }
 
   await client.close()
+  // we can remove "kill" if we don't use this function with different proxies
+  // killing chrome gives us addition ~1s for each request
+  if (!process.env.IS_LOCAL) {
+    await chromeInstance.kill()
+  }
 
   return json
 }
