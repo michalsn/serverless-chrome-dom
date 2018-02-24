@@ -41,11 +41,8 @@ To add another function as a new file to your project, simply add the new file a
 
 By default all endpoints returns `text/html` - with "flat" data. Full informations are returned only if we ask for `application/json` content type.
 
-#### dom
+#### dom - *GET*
 
----
-
-**GET**
 Query string parameters:
 
 * **url** - (required) - URL address
@@ -54,12 +51,13 @@ Query string parameters:
 * **proxyUsername** - (optional) - Proxy username
 * **proxyPassword** - (optional) - Proxy password
 
-`curl -X GET 'https://your-lambda-address-here/dom?url=https://google.com&logBlocked=1' -H 'Content-Type: application/json'`
+```cli
+curl -X GET 'https://your-lambda-address-here/dom?url=https://google.com&logBlocked=1' -H 'Content-Type: application/json'
+```
 
 Sample result *(Code 200)*:
 
-```
-#!json
+```javascript
 
 {
     "status": true,
@@ -73,18 +71,15 @@ Sample result *(Code 200)*:
 }
 ```
 
-#### version
+#### version - *GET*
 
----
-
-**GET**
-
-`curl -X GET 'https://your-lambda-address-here/version' -H 'Content-Type: application/json'`
+```cli
+curl -X GET 'https://your-lambda-address-here/version' -H 'Content-Type: application/json'
+```
 
 Sample result *(Code 200)*:
 
-```
-#!json
+```javascript
 
 {
     "version": "HeadlessChrome/64.0.3282.167"
