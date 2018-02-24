@@ -10,6 +10,7 @@ export default async function loadDOM (request) {
   // page flow (Documents)
   let pageRedirects = { url: [], status: [] }
   let pageIgnoredDocuments = []
+  let pageFrameId
 
   // logging options
   const logBlocked = request.logBlocked || '0'
@@ -79,15 +80,6 @@ export default async function loadDOM (request) {
     });
   });
 
-  // log some info about status code and url
-  Network.responseReceived((params) => {
-    if (params.type === 'Document') {
-      const {url, status} = params.response
-      pageRedirects.url.push(url)
-      pageRedirects.status.push(status)
-    }
-  });
-
   /*Network.responseReceived((params) => {
     const {status, url} = params.response;
     console.log(`${status}: ${url}`);
@@ -95,13 +87,26 @@ export default async function loadDOM (request) {
 
   // spy requests to receive final document (after redirects)
   Network.requestWillBeSent((params) => {
-    if (params.initiator !== undefined && params.initiator.url !== undefined && params.documentURL !== undefined &&
-      pageRedirects.url.indexOf(params.initiator.url) !== -1 && // if initiator page exist in redirects => it's iframe loads
-      pageIgnoredDocuments.indexOf(params.documentURL) === -1
-    ) {
-      pageIgnoredDocuments.push(params.documentURL)
+    if (params.type === 'Document') {
+      // set main frame id
+      if (pageFrameId === undefined) {
+        pageFrameId = params.frameId;
+      }
     }
+      
   })
+
+  // log some info about status code and url
+  Network.responseReceived((params) => {
+    if (params.type === 'Document') {
+      const {url, status} = params.response
+      // if we deal with the main pageFrameId log this url and status
+      if (pageFrameId == params.frameId) {
+        pageRedirects.url.push(url)
+        pageRedirects.status.push(status)
+      }
+    }
+  });
 
   Page.loadEventFired(() => {
     loaded = true
