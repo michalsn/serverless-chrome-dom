@@ -15,8 +15,8 @@ export default async function handler (event, context, callback) {
     contentType = event.headers['Content-Type'] || ''
   }
 
-  if (!['application/json', 'text/html'].includes(contentType)) {
-    contentType = 'text/html'
+  if (!['application/json', 'text/plain'].includes(contentType)) {
+    contentType = 'text/plain'
   }
 
   request.userAgent = request.userAgent || 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36'

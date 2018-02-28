@@ -39,7 +39,7 @@ To add another function as a new file to your project, simply add the new file a
 
 ### Endpoints
 
-By default all endpoints returns `text/html` - with "flat" data. Full informations are returned only if we ask for `application/json` content type.
+By default all endpoints returns `text/plain` - with "flat" data. Full informations are returned only if we ask for `application/json` content type.
 
 #### dom - *GET*
 
