@@ -82,7 +82,7 @@ Sample result *(Code 200)*:
 ```javascript
 
 {
-    "version": "HeadlessChrome/64.0.3282.167"
+    "version": "HeadlessChrome/69.0.3497.81"
 }
 ```
 
